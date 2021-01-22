@@ -33,6 +33,9 @@ namespace KataBaseXunit.App
 
         public bool IsCellAliveAt(int x, int y)
         {
+            if (IsCellOutOfBound( x,  y))
+                return false;
+                
             return _cells[x, y].IsAlive;
         }
 
@@ -40,5 +43,22 @@ namespace KataBaseXunit.App
         {
             throw new System.NotImplementedException();
         }
+
+        public int GetNumberOfAliveNeighbours(int x, int y)
+        {
+            if(IsCellAliveAt(x + 1, y))
+                return 1;
+
+            if(IsCellAliveAt(x, y + 1))
+                return 1;
+            
+            return 0;
+        }
+
+        private bool IsCellOutOfBound(int x, int y)
+        {
+            return x > Width - 1 || y > Height - 1;
+        }
+        
     }
 }
