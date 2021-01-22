@@ -15,7 +15,7 @@ namespace KataBaseXunit.App
             {
                 for (var j = 0; j < Height; j++)
                 {
-                    _cells[i, j] = new DeadCell(i, j);
+                    _cells[i, j] = new DeadCell();
                 }
             }
 
@@ -23,11 +23,11 @@ namespace KataBaseXunit.App
             {
                 foreach (var (x,y) in aliveCellCoords)
                 {
-                    _cells[x,y] = new AliveCell(x,y);
+                    _cells[x,y] = new AliveCell();
                 }
             }
         }
-        
+
         public int Width { get; }
         public int Height { get; }
 
