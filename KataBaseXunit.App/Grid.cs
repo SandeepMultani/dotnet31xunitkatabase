@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace KataBaseXunit.App
 {
     public class Grid
     {
         private readonly Cell[,] _cells;
+
         public Grid(int width, int height, List<(int x, int y)> aliveCellCoords = null)
         {
             Width = width;
@@ -21,9 +23,9 @@ namespace KataBaseXunit.App
 
             if (aliveCellCoords != null)
             {
-                foreach (var (x,y) in aliveCellCoords)
+                foreach (var (x, y) in aliveCellCoords)
                 {
-                    _cells[x,y] = new AliveCell();
+                    _cells[x, y] = new AliveCell();
                 }
             }
         }
@@ -33,9 +35,9 @@ namespace KataBaseXunit.App
 
         public bool IsCellAliveAt(int x, int y)
         {
-            if (IsCellOutOfBound( x,  y))
+            if (IsCellOutOfBound(x, y))
                 return false;
-                
+
             return _cells[x, y].IsAlive;
         }
 
@@ -46,19 +48,23 @@ namespace KataBaseXunit.App
 
         public int GetNumberOfAliveNeighbours(int x, int y)
         {
-            if(IsCellAliveAt(x + 1, y))
-                return 1;
-
-            if(IsCellAliveAt(x, y + 1))
-                return 1;
-            
-            return 0;
+            return new[]
+            {
+                (x - 1, y),
+                (x + 1, y),
+                (x, y - 1),
+                (x, y + 1),
+                (x + 1, y + 1),
+                (x - 1, y - 1),
+                (x + 1, y - 1),
+                (x - 1, y + 1)
+            }.Count(coord =>
+                IsCellAliveAt(coord.Item1, coord.Item2));
         }
 
         private bool IsCellOutOfBound(int x, int y)
         {
-            return x > Width - 1 || y > Height - 1;
+            return x < 0 || x > Width - 1 || y > Height - 1 || y < 0;
         }
-        
     }
 }
