@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KataBaseXunit.App
 {
     public class Grid
     {
-        private readonly Cell[,] _cells;
+        private Cell[,] _cells;
 
         public Grid(int width, int height, List<(int x, int y)> aliveCellCoords = null)
         {
@@ -13,13 +14,7 @@ namespace KataBaseXunit.App
             Height = height;
             _cells = new Cell[Width, Height];
 
-            for (var i = 0; i < Width; i++)
-            {
-                for (var j = 0; j < Height; j++)
-                {
-                    _cells[i, j] = new DeadCell();
-                }
-            }
+            ForEachCell((x,y) => _cells[x, y] = new DeadCell());
 
             if (aliveCellCoords != null)
             {
@@ -30,8 +25,8 @@ namespace KataBaseXunit.App
             }
         }
 
-        public int Width { get; }
-        public int Height { get; }
+        private int Width { get; }
+        private int Height { get; }
 
         public bool IsCellAliveAt(int x, int y)
         {
@@ -41,12 +36,7 @@ namespace KataBaseXunit.App
             return _cells[x, y].IsAlive;
         }
 
-        public void AdvanceGeneration()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int GetNumberOfAliveNeighbours(int x, int y)
+        private int GetNumberOfAliveNeighbours(int x, int y)
         {
             return new[]
             {
@@ -65,6 +55,31 @@ namespace KataBaseXunit.App
         private bool IsCellOutOfBound(int x, int y)
         {
             return x < 0 || x > Width - 1 || y > Height - 1 || y < 0;
+        }
+
+        public void AdvanceGeneration()
+        {
+            var nextGenCells = new Cell[Width, Height];
+            void AgeCell(int x, int y)
+            {
+                var aliveNeighbours = GetNumberOfAliveNeighbours(x, y);
+                nextGenCells[x, y] = _cells[x, y].Age(aliveNeighbours);
+            }
+
+            ForEachCell(AgeCell);
+
+            _cells = nextGenCells;
+        }
+
+        private void ForEachCell(Action<int, int> action)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    action(x, y);
+                }
+            }
         }
     }
 }

@@ -6,13 +6,14 @@ namespace KataBaseXunit.App.Tests
     public class CellLiveNeighboursTests
     {
         [Fact]
-        public void GivenAGrid_GridIs1By1_ThenAliveNeighboursForACellIsZero()
+        public void GivenAGrid_GridIs1By1_ThenCellIsDead()
         {
-            var sut = new Grid(1,1);
+            var aliveCells = new List<(int x, int y)> {(0, 0)};
+            var sut = new Grid(1,1, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(0, 0);
-            
-            Assert.Equal(0, results);
+            sut.AdvanceGeneration();
+
+            Assert.False(sut.IsCellAliveAt(0, 0));
         }
 
         [Fact]
@@ -22,9 +23,10 @@ namespace KataBaseXunit.App.Tests
             
             var sut = new Grid(2,1, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(0, 0);
+            sut.AdvanceGeneration();
             
-            Assert.Equal(1, results);
+            Assert.False(sut.IsCellAliveAt(0, 0));
+            Assert.False(sut.IsCellAliveAt(1,0));
         }
         
         [Fact]
@@ -34,9 +36,10 @@ namespace KataBaseXunit.App.Tests
             
             var sut = new Grid(1,2, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(0, 0);
-            
-            Assert.Equal(1, results);
+            sut.AdvanceGeneration();
+
+            Assert.False(sut.IsCellAliveAt(0, 0));
+            Assert.False(sut.IsCellAliveAt(0,1));
         }
         
         [Fact]
@@ -46,9 +49,10 @@ namespace KataBaseXunit.App.Tests
             
             var sut = new Grid(2,1, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(1, 0);
-            
-            Assert.Equal(1, results);
+            sut.AdvanceGeneration();
+
+            Assert.False(sut.IsCellAliveAt(0, 0));
+            Assert.False(sut.IsCellAliveAt(1,0));
         }
         
         [Fact]
@@ -58,25 +62,43 @@ namespace KataBaseXunit.App.Tests
             
             var sut = new Grid(1,2, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(0, 1);
-            
-            Assert.Equal(1, results);
+            sut.AdvanceGeneration();
+
+            Assert.False(sut.IsCellAliveAt(0, 0));
+            Assert.False(sut.IsCellAliveAt(0,1));
         }
         
-        [Theory]
-        [InlineData(0,0)]
-        [InlineData(0,1)]
-        [InlineData(1,0)]
-        [InlineData(1,1)]
-        public void GiveAGrid_GridIs2By2_ThenAliveNeighboursForCellsAre3(int x, int y)
+        [Fact]
+        public void GiveAGrid_GridIs2By2_ThenAliveNeighboursForCellsAre3()
         {
             var aliveCells = new List<(int x, int y)> {(0, 0), (0, 1), (1,0), (1,1)};
             
             var sut = new Grid(2,2, aliveCells);
 
-            var results = sut.GetNumberOfAliveNeighbours(x, y);
-            
-            Assert.Equal(3, results);
+            sut.AdvanceGeneration();
+
+            Assert.True(sut.IsCellAliveAt(0, 0));
+            Assert.True(sut.IsCellAliveAt(0,1));
+            Assert.True(sut.IsCellAliveAt(1,0));
+            Assert.True(sut.IsCellAliveAt(1,1));
+        }
+
+        [Fact]
+        public void GivenAGrid_GridIs3by2_ThenCellsAreCorrect()
+        {
+            var aliveCells = new List<(int x, int y)> {(0, 1), (1,0), (1,1),  (2,1)};
+
+            var sut = new Grid(3,2, aliveCells);
+
+            sut.AdvanceGeneration();
+
+            Assert.True(sut.IsCellAliveAt(0, 0));
+            Assert.True(sut.IsCellAliveAt(0, 1));
+            Assert.True(sut.IsCellAliveAt(1, 0));
+            Assert.True(sut.IsCellAliveAt(1, 1));
+            Assert.True(sut.IsCellAliveAt(2, 0));
+            Assert.True(sut.IsCellAliveAt(2, 1));
+
         }
     }
 }

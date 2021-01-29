@@ -14,15 +14,7 @@ namespace KataBaseXunit.App.Tests
                 (1,1)
             };
         }
-        [Fact]
-        public void GivenGridDimensions_When_ThenGridIsInit()
-        {
-            //act
-            var sut = new Grid(Width, Height);
-            //assert
-            Assert.Equal(Width, sut.Width);
-            Assert.Equal(Height, sut.Height);
-        }
+
         [Fact]
         public void GivenAGrid_WhenCellIsDeadOrAlive_ThenGridReturnsCorrectState()
         {
